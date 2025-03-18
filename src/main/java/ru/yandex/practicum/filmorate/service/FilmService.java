@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class FilmService {
     private final Map<Long, Film> films = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong(0);
-    private final int DESCRIPTION_LENGTH = 200;
+    private final int maxDescriptionLength = 200;
 
     public Collection<Film> get() {
         return films.values();
@@ -45,7 +45,7 @@ public class FilmService {
             throw new ConditionsNotMetException("Film name is empty");
         }
 
-        if (film.getDescription().length() >= DESCRIPTION_LENGTH) {
+        if (film.getDescription().length() >= maxDescriptionLength) {
             log.error("Description exceed 200 symbols");
             throw new ConditionsNotMetException("Description's length shouldn't exceed 200 symbols");
         }
