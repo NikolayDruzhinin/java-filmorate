@@ -29,6 +29,7 @@ public class FilmService {
             log.error("Film with id {} not found", film.getId());
             throw new NotFoundException("Film with id " + film.getId() + " not found");
         }
+        validate(film);
 
         Film oldFilm = films.get(film.getId());
         oldFilm.setDescription(film.getDescription());
@@ -40,6 +41,14 @@ public class FilmService {
     }
 
     public Film create(Film film) {
+        validate(film);
+        film.setId(idCounter.incrementAndGet());
+        films.put(film.getId(), film.toBuilder().build());
+        log.debug("{} was created", film);
+        return film;
+    }
+
+    private void validate(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             log.error("Film name is empty");
             throw new ConditionsNotMetException("Film name is empty");
@@ -59,10 +68,5 @@ public class FilmService {
             log.error("Film's duration {} is incorrect", film.getDuration());
             throw new ConditionsNotMetException("Film's duration is incorrect");
         }
-
-        film.setId(idCounter.incrementAndGet());
-        films.put(film.getId(), film.toBuilder().build());
-        log.debug("{} was created", film);
-        return film;
     }
 }

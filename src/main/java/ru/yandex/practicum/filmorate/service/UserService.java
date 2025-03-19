@@ -28,6 +28,8 @@ public class UserService {
             throw new NotFoundException("User with id " + user.getId() + " not found");
         }
 
+        validate(user);
+
         User oldUser = users.get(user.getId());
         oldUser.setName(user.getName());
         oldUser.setLogin(user.getLogin());
@@ -37,6 +39,19 @@ public class UserService {
     }
 
     public User create(User user) {
+        validate(user);
+
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+
+        user.setId(idCounter.incrementAndGet());
+        users.put(user.getId(), user.toBuilder().build());
+        log.debug("{} was created", user);
+        return user;
+    }
+
+    private void validate(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Email '{}' is incorrect", user.getEmail());
             throw new ConditionsNotMetException("Email is incorrect");
@@ -50,13 +65,5 @@ public class UserService {
             throw new ConditionsNotMetException("Birthday is incorrect");
         }
 
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
-        user.setId(idCounter.incrementAndGet());
-        users.put(user.getId(), user.toBuilder().build());
-        log.debug("{} was created", user);
-        return user;
     }
 }
