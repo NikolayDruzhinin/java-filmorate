@@ -29,13 +29,13 @@ public class FilmServiceTest {
     }
 
     @Test
-    public void Film_create_should_be_valid() {
+    public void film_create_should_be_valid() {
         filmService.create(film1);
         assertEquals(filmService.get().stream().findFirst().get(), film1);
     }
 
     @Test
-    public void Film_update_should_be_valid() {
+    public void film_update_should_be_valid() {
         filmService.create(film1);
         Film film2 = film1.toBuilder()
                 .name("New name")
@@ -48,12 +48,12 @@ public class FilmServiceTest {
     }
 
     @Test
-    public void Film_update_should_throw_NotFoundException() {
+    public void film_update_should_throw_NotFoundException() {
         assertThrows(NotFoundException.class, () -> filmService.update(film1));
     }
 
     @Test
-    public void Film_create_should_throw_ConditionsNotMetException() {
+    public void film_create_should_throw_ConditionsNotMetException() {
         film1.setName("");
         assertThrows(ConditionsNotMetException.class, () -> filmService.create(film1));
 

@@ -28,13 +28,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void User_create_should_be_valid() {
+    public void user_create_should_be_valid() {
         userService.create(user1);
         assertEquals(userService.get().stream().findFirst().get(), user1);
     }
 
     @Test
-    public void User_update_should_be_valid() {
+    public void user_update_should_be_valid() {
         userService.create(user1);
         User user2 = user1.toBuilder()
                 .login("test2")
@@ -45,7 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void User_create_should_throw_ConditionsNotMetException() {
+    public void user_create_should_throw_ConditionsNotMetException() {
         user1.setEmail("");
         assertThrows(ConditionsNotMetException.class, () -> userService.create(user1));
         user1.setEmail("test.ru");
@@ -55,13 +55,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void User_create_should_throw_NotFoundException() {
+    public void user_create_should_throw_NotFoundException() {
         user1.setLogin("");
         assertThrows(NotFoundException.class, () -> userService.create(user1));
     }
 
     @Test
-    public void User_update_should_throw_NotFoundException() {
+    public void user_update_should_throw_NotFoundException() {
         user1.setId(2);
         assertThrows(NotFoundException.class, () -> userService.update(user1));
     }
