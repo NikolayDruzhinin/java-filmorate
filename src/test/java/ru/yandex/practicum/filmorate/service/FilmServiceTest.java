@@ -60,11 +60,11 @@ public class FilmServiceTest {
         film1.setName(null);
         assertThrows(ConditionsNotMetException.class, () -> filmService.create(film1));
 
-        String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWSYZ";
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWSYZ";
         StringBuilder sb = new StringBuilder();
         Random rand = new Random();
         for (int i = 0; i < 200; ++i) {
-            sb.append(ALPHABET.charAt(Math.abs(rand.nextInt()) % ALPHABET.length()));
+            sb.append(alphabet.charAt(Math.abs(rand.nextInt()) % alphabet.length()));
         }
 
         film1.setDescription(sb.toString());
