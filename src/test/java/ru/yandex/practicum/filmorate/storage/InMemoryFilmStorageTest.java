@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,13 +13,13 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FilmServiceTest {
-    private FilmService filmService;
+public class InMemoryFilmStorageTest {
+    private InMemoryFilmStorage inMemoryFilmStorage;
     private Film film1;
 
     @BeforeEach
     public void init() {
-        filmService = new FilmService();
+        inMemoryFilmStorage = new InMemoryFilmStorage();
         film1 = Film.builder()
                 .name("test")
                 .description("description")
@@ -30,35 +30,35 @@ public class FilmServiceTest {
 
     @Test
     public void film_create_should_be_valid() {
-        filmService.create(film1);
-        assertEquals(filmService.get().stream().findFirst().get(), film1);
+        inMemoryFilmStorage.create(film1);
+        assertEquals(inMemoryFilmStorage.get().stream().findFirst().get(), film1);
     }
 
     @Test
     public void film_update_should_be_valid() {
-        filmService.create(film1);
+        inMemoryFilmStorage.create(film1);
         Film film2 = film1.toBuilder()
                 .name("New name")
                 .releaseDate(LocalDate.now().minusYears(1))
                 .description("New description")
                 .duration(1)
                 .build();
-        filmService.update(film2);
-        assertEquals(filmService.get().stream().findFirst().get(), film2);
+        inMemoryFilmStorage.update(film2);
+        assertEquals(inMemoryFilmStorage.get().stream().findFirst().get(), film2);
     }
 
     @Test
     public void film_update_should_throw_NotFoundException() {
-        assertThrows(NotFoundException.class, () -> filmService.update(film1));
+        assertThrows(NotFoundException.class, () -> inMemoryFilmStorage.update(film1));
     }
 
     @Test
     public void film_create_should_throw_ConditionsNotMetException() {
         film1.setName("");
-        assertThrows(ConditionsNotMetException.class, () -> filmService.create(film1));
+        assertThrows(ConditionsNotMetException.class, () -> inMemoryFilmStorage.create(film1));
 
         film1.setName(null);
-        assertThrows(ConditionsNotMetException.class, () -> filmService.create(film1));
+        assertThrows(ConditionsNotMetException.class, () -> inMemoryFilmStorage.create(film1));
 
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWSYZ";
         StringBuilder sb = new StringBuilder();
@@ -68,13 +68,13 @@ public class FilmServiceTest {
         }
 
         film1.setDescription(sb.toString());
-        assertThrows(ConditionsNotMetException.class, () -> filmService.create(film1));
+        assertThrows(ConditionsNotMetException.class, () -> inMemoryFilmStorage.create(film1));
 
         film1.setReleaseDate(LocalDate.of(1984, Month.DECEMBER, 28));
-        assertThrows(ConditionsNotMetException.class, () -> filmService.create(film1));
+        assertThrows(ConditionsNotMetException.class, () -> inMemoryFilmStorage.create(film1));
 
         film1.setDuration(-1);
-        assertThrows(ConditionsNotMetException.class, () -> filmService.create(film1));
+        assertThrows(ConditionsNotMetException.class, () -> inMemoryFilmStorage.create(film1));
     }
 
 }
