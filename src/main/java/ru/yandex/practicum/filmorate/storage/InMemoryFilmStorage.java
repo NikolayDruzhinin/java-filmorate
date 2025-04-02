@@ -86,7 +86,7 @@ public class InMemoryFilmStorage implements Storage<Film> {
     }
 
     public void checkIdExist(long id) {
-        if (films.get(id) == null) {
+        if (!films.containsKey(id)) {
             throw new NotFoundException("Film with id " + id + " not found");
         }
     }

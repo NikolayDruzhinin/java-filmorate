@@ -78,7 +78,7 @@ public class InMemoryUserStorage implements Storage<User> {
     }
 
     public void checkIdExist(long id) {
-        if (users.get(id) == null) {
+        if (!users.containsKey(id)) {
             throw new NotFoundException("User with id " + id + " not found");
         }
     }
