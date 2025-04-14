@@ -1,2 +1,1 @@
-# java-filmorate
-Template repository for Filmorate project.
+![](https://github.com/NikolayDruzhinin/java-filmorate/blob/main/QuickDBD-Free%20Diagram.png)
