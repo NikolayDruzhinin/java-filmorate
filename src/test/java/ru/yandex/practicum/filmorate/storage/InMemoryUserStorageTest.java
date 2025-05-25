@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -57,12 +57,12 @@ public class InMemoryUserStorageTest {
     @Test
     public void user_create_should_throw_NotFoundException() {
         user1.setLogin("");
-        assertThrows(NotFoundException.class, () -> inMemoryUserStorage.create(user1));
+        assertThrows(ResourceNotFoundException.class, () -> inMemoryUserStorage.create(user1));
     }
 
     @Test
     public void user_update_should_throw_NotFoundException() {
         user1.setId(2);
-        assertThrows(NotFoundException.class, () -> inMemoryUserStorage.update(user1));
+        assertThrows(ResourceNotFoundException.class, () -> inMemoryUserStorage.update(user1));
     }
 }

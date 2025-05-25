@@ -5,16 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
-    @EqualsAndHashCode.Include
     private long id;
     @Email
     private String email;
@@ -23,6 +19,18 @@ public class User {
     private String login;
     private String name;
     private LocalDate birthday;
-    private Set<Long> friends;
-    private Boolean isFriendAccepted;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(id);
+    }
 }

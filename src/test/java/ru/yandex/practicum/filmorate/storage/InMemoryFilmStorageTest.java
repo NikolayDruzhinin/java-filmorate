@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -21,7 +21,7 @@ public class InMemoryFilmStorageTest {
     public void init() {
         inMemoryFilmStorage = new InMemoryFilmStorage();
         film1 = Film.builder()
-                .name("test")
+                .title("test")
                 .description("description")
                 .releaseDate(LocalDate.now())
                 .duration(120)
@@ -38,7 +38,7 @@ public class InMemoryFilmStorageTest {
     public void film_update_should_be_valid() {
         inMemoryFilmStorage.create(film1);
         Film film2 = film1.toBuilder()
-                .name("New name")
+                .title("New name")
                 .releaseDate(LocalDate.now().minusYears(1))
                 .description("New description")
                 .duration(1)
@@ -49,15 +49,15 @@ public class InMemoryFilmStorageTest {
 
     @Test
     public void film_update_should_throw_NotFoundException() {
-        assertThrows(NotFoundException.class, () -> inMemoryFilmStorage.update(film1));
+        assertThrows(ResourceNotFoundException.class, () -> inMemoryFilmStorage.update(film1));
     }
 
     @Test
     public void film_create_should_throw_ConditionsNotMetException() {
-        film1.setName("");
+        film1.setTitle("");
         assertThrows(ConditionsNotMetException.class, () -> inMemoryFilmStorage.create(film1));
 
-        film1.setName(null);
+        film1.setTitle(null);
         assertThrows(ConditionsNotMetException.class, () -> inMemoryFilmStorage.create(film1));
 
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWSYZ";

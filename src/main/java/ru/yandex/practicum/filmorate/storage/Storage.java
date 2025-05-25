@@ -1,15 +1,16 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface Storage<T> {
     Collection<T> get();
 
-    T get(long id);
+    Optional<T> get(long id);
 
-    T update(T film);
+    T create(T t);
 
-    T create(T film);
+    void update(T t);
 
-    void checkIdExist(long id);
+    boolean delete(T t);
 }

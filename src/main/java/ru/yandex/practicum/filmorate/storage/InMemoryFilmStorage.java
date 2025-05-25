@@ -3,15 +3,12 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
@@ -21,38 +18,34 @@ public class InMemoryFilmStorage implements Storage<Film> {
     private final AtomicLong idCounter = new AtomicLong(0);
     private final int maxDescriptionLength = 200;
 
-    @Override
     public Collection<Film> get() {
         return films.values();
     }
 
-    @Override
-    public Film get(long id) {
-        return films.get(id);
+    public Optional<Film> get(long id) {
+        return Optional.ofNullable(films.get(id));
     }
 
-    @Override
-    public Film update(Film film) {
+    public void update(Film film) {
         if (!films.containsKey(film.getId())) {
             log.error("Film with id {} not found", film.getId());
-            throw new NotFoundException("Film with id " + film.getId() + " not found");
+            throw new ResourceNotFoundException("Film with id " + film.getId() + " not found");
         }
         validate(film);
 
         Film oldFilm = films.get(film.getId());
         oldFilm.setDescription(film.getDescription());
-        oldFilm.setName(film.getName());
+        oldFilm.setTitle(film.getTitle());
         oldFilm.setDuration(film.getDuration());
         oldFilm.setReleaseDate(film.getReleaseDate());
         if (film.getUsersLikes() != null) {
             oldFilm.setUsersLikes(film.getUsersLikes());
         }
         log.debug("{} was updated", film);
-        return film;
     }
 
     private void validate(Film film) {
-        if (film.getName() == null || film.getName().isBlank()) {
+        if (film.getTitle() == null || film.getTitle().isBlank()) {
             InMemoryFilmStorage.log.error("Film name is empty");
             throw new ConditionsNotMetException("Film name is empty");
         }
@@ -73,7 +66,6 @@ public class InMemoryFilmStorage implements Storage<Film> {
         }
     }
 
-    @Override
     public Film create(Film film) {
         validate(film);
         film.setId(idCounter.incrementAndGet());
@@ -85,9 +77,14 @@ public class InMemoryFilmStorage implements Storage<Film> {
         return film;
     }
 
+    @Override
+    public boolean delete(Film film) {
+        return false;
+    }
+
     public void checkIdExist(long id) {
         if (!films.containsKey(id)) {
-            throw new NotFoundException("Film with id " + id + " not found");
+            throw new ResourceNotFoundException("Film with id " + id + " not found");
         }
     }
 
