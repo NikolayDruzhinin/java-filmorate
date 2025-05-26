@@ -23,16 +23,9 @@ public class Film {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
     private String name;
-
-    @NotBlank
     private String description;
-
-    @NotNull
     private LocalDate releaseDate;
-
-    @Positive
     private int duration;
 
     @ManyToOne
@@ -54,7 +47,6 @@ public class Film {
             joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-
     @Builder.Default
     private Set<User> likedByUsers = new HashSet<>();
 

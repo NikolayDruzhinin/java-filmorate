@@ -4,8 +4,6 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.model.GENRE;
-import ru.yandex.practicum.filmorate.model.MPA;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -14,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FilmCreateDto {
-    @NotBlank(message = "Name can npt be blanc")
+    @NotBlank(message = "Name can not be blanc")
     private String name;
 
     @Size(max = 200, message = "Description must be 200 characters or less")
@@ -26,8 +24,10 @@ public class FilmCreateDto {
 
     @Positive(message = "Duration must be positive")
     private int duration;
-    private MPA mpa;
-    private Set<GENRE> genres;
+
+    private MpaDto mpa;
+
+    private Set<GenreDto> genres;
 
     @AssertTrue(message = "Release date must be after December 28, 1895")
     public boolean isReleaseDateValid() {
