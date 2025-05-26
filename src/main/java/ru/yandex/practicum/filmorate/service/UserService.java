@@ -43,7 +43,7 @@ public class UserService {
     }
 
     public UserDto updateUser(UserDto userDto) {
-        log.info("update user rq {}", userDto );
+        log.info("update user rq {}", userDto);
         User user = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User " + userDto + " not found"));
         modelMapper.map(userDto, user);
