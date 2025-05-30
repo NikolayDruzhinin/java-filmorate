@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "films")
@@ -36,7 +36,7 @@ public class Film {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     @Builder.Default
-    private Set<Genre> genres = new HashSet<>();
+    private List<Genre> genres = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -45,7 +45,7 @@ public class Film {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @Builder.Default
-    private Set<User> likedByUsers = new HashSet<>();
+    private List<User> likedByUsers = new ArrayList<>();
 
     public void addGenre(Genre genre) {
         this.genres.add(genre);

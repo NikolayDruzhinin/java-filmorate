@@ -53,7 +53,7 @@ public class RepositoryTest {
 
     @BeforeAll
     void setUp() {
-        testMpa = new Mpa(MPA.PG13);
+        testMpa = new Mpa(MPA.PG_13);
         mpaRepository.save(testMpa);
 
         testGenre = new Genre(GENRE.COMEDY);
@@ -120,11 +120,11 @@ public class RepositoryTest {
 
         Optional<Genre> foundGenre = genreRepository.findById(savedGenre.getId());
         Assertions.assertTrue(foundGenre.isPresent());
-        assertEquals(GENRE.DRAMA, foundGenre.get().getGenreType());
+        assertEquals(GENRE.DRAMA, foundGenre.get().getName());
 
-        savedGenre.setGenreType(GENRE.ACTION);
+        savedGenre.setName(GENRE.ACTION);
         Genre updatedGenre = genreRepository.save(savedGenre);
-        assertEquals(GENRE.ACTION, updatedGenre.getGenreType());
+        assertEquals(GENRE.ACTION, updatedGenre.getName());
 
         genreRepository.delete(updatedGenre);
         assertFalse(genreRepository.findById(updatedGenre.getId()).isPresent());
@@ -132,7 +132,7 @@ public class RepositoryTest {
 
     @Test
     public void testFindByGenreType() {
-        Optional<Genre> foundGenre = genreRepository.findByGenreType(GENRE.COMEDY);
+        Optional<Genre> foundGenre = genreRepository.findByName(GENRE.COMEDY);
         Assertions.assertTrue(foundGenre.isPresent());
         assertEquals(testGenre.getId(), foundGenre.get().getId());
     }

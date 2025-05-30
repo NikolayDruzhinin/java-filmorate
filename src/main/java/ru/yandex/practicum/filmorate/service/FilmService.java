@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -9,14 +10,16 @@ import ru.yandex.practicum.filmorate.dao.Genre;
 import ru.yandex.practicum.filmorate.dao.Mpa;
 import ru.yandex.practicum.filmorate.dao.User;
 import ru.yandex.practicum.filmorate.dao.repository.FilmRepository;
+import ru.yandex.practicum.filmorate.dao.repository.GenreRepository;
 import ru.yandex.practicum.filmorate.dao.repository.MpaRepository;
 import ru.yandex.practicum.filmorate.dao.repository.UserRepository;
-import ru.yandex.practicum.filmorate.dto.FilmCreateDto;
-import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.FilmRqDto;
+import ru.yandex.practicum.filmorate.dto.FilmRsDto;
+import ru.yandex.practicum.filmorate.dto.GenreRqDto;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,44 +29,67 @@ public class FilmService {
     private final FilmRepository filmRepository;
     private final UserRepository userRepository;
     private final MpaRepository mpaRepository;
+    private final GenreRepository genreRepository;
     private final ModelMapper modelMapper;
 
-    public List<FilmDto> getAllFilms() {
+    public List<FilmRsDto> getAllFilms() {
         log.info("getting all films rq");
         return filmRepository.findAll().stream()
-                .map(f -> modelMapper.map(f, FilmDto.class))
+                .map(f -> modelMapper.map(f, FilmRsDto.class))
                 .toList();
     }
 
-    public FilmDto createFilm(FilmCreateDto filmCreateDto) {
-        log.info("create film rq {}", filmCreateDto);
-        Film film = modelMapper.map(filmCreateDto, Film.class);
+    @Transactional
+    public FilmRsDto createFilm(FilmRqDto filmRequest) {
+        log.info("create film rq {}", filmRequest);
+        Film film = modelMapper.map(filmRequest, Film.class);
 
-        if (filmCreateDto.getMpa() != null) {
-            Mpa mpa = mpaRepository.findById(filmCreateDto.getMpa().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("MPA with id " + filmCreateDto.getMpa().getId() + " not found"));
+        if (filmRequest.getMpa() != null) {
+            Mpa mpa = mpaRepository.findById(filmRequest.getMpa().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("MPA with id " + filmRequest.getMpa().getId() + " not found"));
             film.setMpa(mpa);
         }
+
+        if (filmRequest.getGenres() != null) {
+            List<Genre> genres = filmRequest.getGenres().stream()
+                    .sorted(Comparator.comparingLong(GenreRqDto::getId))
+                    .map(genre -> genreRepository.findById(genre.getId())
+                            .orElseThrow(() -> new ResourceNotFoundException("Genre with id " + genre.getId() + " not found")))
+                    .toList();
+            film.setGenres(genres);
+        }
+
         Film saved = filmRepository.save(film);
-        return modelMapper.map(saved, FilmDto.class);
+        return modelMapper.map(saved, FilmRsDto.class);
     }
 
-    public FilmDto updateFilm(FilmDto filmDto) {
+    @Transactional
+    public FilmRsDto updateFilm(FilmRsDto filmDto) {
         log.info("update film rq {}", filmDto);
         Film film = filmRepository.findById(filmDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Film " + filmDto + " not found"));
-        modelMapper.map(filmDto, film);
-        Film updated = filmRepository.save(film);
-        return modelMapper.map(updated, FilmDto.class);
+        film.setName(filmDto.getName());
+        film.setDescription(filmDto.getDescription());
+        film.setReleaseDate(filmDto.getReleaseDate());
+        film.setDuration(filmDto.getDuration());
+
+        if (filmDto.getMpa() != null && filmDto.getMpa().getId() != null) {
+            Mpa newMpa = mpaRepository.findById(filmDto.getMpa().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("MPA not found"));
+            film.setMpa(newMpa);
+        }
+        filmRepository.save(film);
+        return filmDto;
     }
 
-    public List<FilmDto> getTopFilms(int count) {
+    public List<FilmRsDto> getTopFilms(int count) {
         log.info("top {} film rq", count);
         return filmRepository.findTopFilms(count).stream()
-                .map(f -> modelMapper.map(f, FilmDto.class))
+                .map(f -> modelMapper.map(f, FilmRsDto.class))
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void addLike(Long filmId, Long userId) {
         log.info("add like for filmId {} by userId {}", filmId, userId);
         Film film = filmRepository.findById(filmId)
@@ -75,6 +101,7 @@ public class FilmService {
         filmRepository.save(film);
     }
 
+    @Transactional
     public void removeLike(Long filmId, Long userId) {
         log.info("remove like for filmId {} by userId {}", filmId, userId);
         Film film = filmRepository.findById(filmId)
@@ -86,10 +113,10 @@ public class FilmService {
         filmRepository.save(film);
     }
 
-    public Set<Genre> getFilmGenres(Long filmId) {
+    public FilmRsDto getFilmById(Long filmId) {
         log.info("film genres rq for filmId {}", filmId);
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new ResourceNotFoundException("Film with id " + filmId + " not found"));
-        return film.getGenres();
+        return modelMapper.map(film, FilmRsDto.class);
     }
 }

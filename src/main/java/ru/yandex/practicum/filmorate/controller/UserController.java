@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.dto.UserCreateDto;
-import ru.yandex.practicum.filmorate.dto.UserDto;
+import ru.yandex.practicum.filmorate.dto.UserRqDto;
+import ru.yandex.practicum.filmorate.dto.UserRsDto;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
@@ -20,12 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
+    public List<UserRsDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) {
+    public UserRsDto getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
@@ -44,25 +44,25 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<UserDto> getFriends(@Positive @PathVariable Long id) {
+    public List<UserRsDto> getFriends(@Positive @PathVariable Long id) {
         return userService.getUserFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<UserDto> getCommonFriends(@Positive @PathVariable Long id,
-                                          @Positive @PathVariable Long otherId) {
+    public List<UserRsDto> getCommonFriends(@Positive @PathVariable Long id,
+                                            @Positive @PathVariable Long otherId) {
         return userService.getCommonFriends(id, otherId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@Valid @RequestBody UserCreateDto userRequest) {
+    public UserRsDto create(@Valid @RequestBody UserRqDto userRequest) {
         return userService.createUser(userRequest);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserDto update(@Valid @RequestBody UserDto user) {
+    public UserRsDto update(@Valid @RequestBody UserRsDto user) {
         return userService.updateUser(user);
     }
 }

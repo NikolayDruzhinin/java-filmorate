@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilmCreateDto {
+public class FilmRqDto {
     @NotBlank(message = "Name can not be blanc")
     private String name;
 
@@ -25,9 +25,9 @@ public class FilmCreateDto {
     @Positive(message = "Duration must be positive")
     private int duration;
 
-    private MpaDto mpa;
+    private MpaRqDto mpa;
 
-    private Set<GenreDto> genres;
+    private Set<GenreRqDto> genres;
 
     @AssertTrue(message = "Release date must be after December 28, 1895")
     public boolean isReleaseDateValid() {

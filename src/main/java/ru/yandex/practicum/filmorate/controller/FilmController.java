@@ -6,9 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.dao.Genre;
-import ru.yandex.practicum.filmorate.dto.FilmCreateDto;
-import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.FilmRqDto;
+import ru.yandex.practicum.filmorate.dto.FilmRsDto;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
@@ -22,24 +21,24 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping
-    public Collection<FilmDto> getAll() {
+    public Collection<FilmRsDto> getAll() {
         return filmService.getAllFilms();
     }
 
     @GetMapping("/{filmId}")
-    public Collection<Genre> getFilmGenres(@PathVariable Long filmId) {
-        return filmService.getFilmGenres(filmId);
+    public FilmRsDto getFilm(@PathVariable Long filmId) {
+        return filmService.getFilmById(filmId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FilmDto create(@Valid @RequestBody FilmCreateDto filmRequest) {
+    public FilmRsDto create(@Valid @RequestBody FilmRqDto filmRequest) {
         return filmService.createFilm(filmRequest);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public FilmDto update(@Valid @RequestBody FilmDto film) {
+    public FilmRsDto update(@Valid @RequestBody FilmRsDto film) {
         return filmService.updateFilm(film);
     }
 
@@ -58,7 +57,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<FilmDto> getTopFilms(@RequestParam(defaultValue = "10") int count) {
+    public List<FilmRsDto> getTopFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getTopFilms(count);
     }
 

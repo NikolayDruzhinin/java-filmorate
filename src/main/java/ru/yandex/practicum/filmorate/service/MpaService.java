@@ -2,9 +2,11 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.Mpa;
 import ru.yandex.practicum.filmorate.dao.repository.MpaRepository;
+import ru.yandex.practicum.filmorate.dto.MpaRsDto;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 
 import java.util.List;
@@ -14,14 +16,18 @@ import java.util.List;
 @Slf4j
 public class MpaService {
     private final MpaRepository mpaRepository;
+    private final ModelMapper modelMapper;
 
-    public List<Mpa> getAll() {
-        return mpaRepository.findAll();
+    public List<MpaRsDto> getAll() {
+        return mpaRepository.findAllByOrderByIdAsc().stream()
+                .map(mpa -> modelMapper.map(mpa, MpaRsDto.class))
+                .toList();
     }
 
-    public Mpa getMpaById(Long mpaId) {
+    public MpaRsDto getMpaById(Long mpaId) {
         log.info("map rq for mpaId {}", mpaId);
-        return mpaRepository.findById(mpaId)
+        Mpa mpa = mpaRepository.findById(mpaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Mpa " + mpaId + "not found"));
+        return modelMapper.map(mpa, MpaRsDto.class);
     }
 }

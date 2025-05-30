@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
 import ru.yandex.practicum.filmorate.model.GENRE;
+import ru.yandex.practicum.filmorate.util.GenreConverter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,8 +19,8 @@ public class Genre {
 
     @Setter
     @Column(name = "name", unique = true)
-    @Enumerated(EnumType.STRING)
-    private GENRE genreType;
+    @Convert(converter = GenreConverter.class)
+    private GENRE name;
 
     @ManyToMany(mappedBy = "genres")
     private Set<Film> films = new HashSet<>();
@@ -27,8 +28,8 @@ public class Genre {
     public Genre() {
     }
 
-    public Genre(GENRE genreType) {
-        this.genreType = genreType;
+    public Genre(GENRE name) {
+        this.name = name;
     }
 
     public void addFilm(Film film) {

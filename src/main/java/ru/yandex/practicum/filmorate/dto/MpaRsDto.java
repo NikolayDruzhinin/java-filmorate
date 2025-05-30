@@ -3,16 +3,12 @@ package ru.yandex.practicum.filmorate.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import ru.yandex.practicum.filmorate.model.MPA;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class MpaRsDto {
     private Long id;
-    private String email;
-    private String login;
-    private String name;
-    private LocalDate birthday;
+    private MPA name;
 }
