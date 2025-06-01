@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.model.GENRE;
 
 @Data
 @NoArgsConstructor
@@ -13,5 +12,5 @@ import ru.yandex.practicum.filmorate.model.GENRE;
 public class GenreRsDto {
     @EqualsAndHashCode.Include
     private Long id;
-    private GENRE name;
+    private String name;
 }

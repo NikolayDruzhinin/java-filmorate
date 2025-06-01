@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.dao;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
-import ru.yandex.practicum.filmorate.model.GENRE;
-import ru.yandex.practicum.filmorate.util.GenreConverter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,8 +17,7 @@ public class Genre {
 
     @Setter
     @Column(name = "name", unique = true)
-    @Convert(converter = GenreConverter.class)
-    private GENRE name;
+    private String name;
 
     @ManyToMany(mappedBy = "genres")
     private Set<Film> films = new HashSet<>();
@@ -28,7 +25,7 @@ public class Genre {
     public Genre() {
     }
 
-    public Genre(GENRE name) {
+    public Genre(String name) {
         this.name = name;
     }
 

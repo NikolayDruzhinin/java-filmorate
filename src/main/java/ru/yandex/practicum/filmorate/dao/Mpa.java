@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.dao;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.model.MPA;
-import ru.yandex.practicum.filmorate.util.MpaConverter;
 
 @Entity
 @Table(name = "mpa")
@@ -16,10 +14,9 @@ public class Mpa {
     private Long id;
 
     @Column(name = "name", unique = true, nullable = false)
-    @Convert(converter = MpaConverter.class)
-    private MPA name;
+    private String name;
 
-    public Mpa(MPA name) {
+    public Mpa(String name) {
         this.name = name;
     }
 }

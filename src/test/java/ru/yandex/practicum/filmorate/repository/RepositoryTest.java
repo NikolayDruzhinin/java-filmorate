@@ -16,8 +16,6 @@ import ru.yandex.practicum.filmorate.dao.repository.FilmRepository;
 import ru.yandex.practicum.filmorate.dao.repository.GenreRepository;
 import ru.yandex.practicum.filmorate.dao.repository.MpaRepository;
 import ru.yandex.practicum.filmorate.dao.repository.UserRepository;
-import ru.yandex.practicum.filmorate.model.GENRE;
-import ru.yandex.practicum.filmorate.model.MPA;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,10 +54,10 @@ public class RepositoryTest {
         mpaRepository.deleteAll();
         genreRepository.deleteAll();
 
-        testMpa = new Mpa(MPA.NC_17);
+        testMpa = new Mpa("NC-17");
         mpaRepository.save(testMpa);
 
-        testGenre = new Genre(GENRE.ACTION);
+        testGenre = new Genre("Боевик");
         genreRepository.save(testGenre);
 
         testUser = User.builder()
@@ -117,17 +115,17 @@ public class RepositoryTest {
 
     @Test
     public void testGenreCrudOperations() {
-        Genre newGenre = new Genre(GENRE.DRAMA);
+        Genre newGenre = new Genre("Драма");
         Genre savedGenre = genreRepository.save(newGenre);
         assertNotNull(savedGenre.getId());
 
         Optional<Genre> foundGenre = genreRepository.findById(savedGenre.getId());
         Assertions.assertTrue(foundGenre.isPresent());
-        assertEquals(GENRE.DRAMA, foundGenre.get().getName());
+        assertEquals("Драма", foundGenre.get().getName());
 
-        savedGenre.setName(GENRE.ACTION);
+        savedGenre.setName("Боевик");
         Genre updatedGenre = genreRepository.save(savedGenre);
-        assertEquals(GENRE.ACTION, updatedGenre.getName());
+        assertEquals("Боевик", updatedGenre.getName());
 
         genreRepository.delete(updatedGenre);
         assertFalse(genreRepository.findById(updatedGenre.getId()).isPresent());
@@ -175,17 +173,17 @@ public class RepositoryTest {
 
     @Test
     public void testMpaCrudOperations() {
-        Mpa newMpa = new Mpa(MPA.PG);
+        Mpa newMpa = new Mpa("PG");
         Mpa savedMpa = mpaRepository.save(newMpa);
         assertNotNull(savedMpa.getId());
 
         Optional<Mpa> foundMpa = mpaRepository.findById(savedMpa.getId());
         assertTrue(foundMpa.isPresent());
-        assertEquals(MPA.PG, foundMpa.get().getName());
+        assertEquals("PG", foundMpa.get().getName());
 
-        savedMpa.setName(MPA.R);
+        savedMpa.setName("R");
         Mpa updatedMpa = mpaRepository.save(savedMpa);
-        assertEquals(MPA.R, updatedMpa.getName());
+        assertEquals("R", updatedMpa.getName());
 
         mpaRepository.delete(updatedMpa);
         assertFalse(mpaRepository.findById(updatedMpa.getId()).isPresent());
